@@ -2,6 +2,7 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
+    flex: 1,
     marginTop: 10,
     marginBottom: 5,
     width: "100%",
@@ -32,10 +33,12 @@ export const styles = StyleSheet.create({
   },
 
   mainContainer: {
+    flex: 2,
     padding: 5,
     alignItems: "center",
   },
   scoreContainer: {
+    flex: 1,
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "flex-start",
@@ -83,7 +86,7 @@ export const styles = StyleSheet.create({
   cardImage: {
     width: 100,
     height: 150,
-    backgroundColor: "gray",
+    resizeMode: "contain",
     margin: 10,
   },
 });

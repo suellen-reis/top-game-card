@@ -86,12 +86,16 @@ export default function CardGame() {
     setYourCard({});
     setComputerCard({});
 
-    fetch(URL + "new/shuffle/?deck_count=1")
-      .then((response) => response.json())
-      .then((json) => setDeck(json))
-      .catch((error) => {
+    const getCardDeck = async () => {
+      try {
+        const resp = await fetch(URL + "new/shuffle/?deck_count=1");
+        const json = await resp.json();
+        return setDeck(json);
+      } catch (error) {
         console.log("Error fetching deck id", error);
-      });
+      }
+    };
+    getCardDeck();
   };
 
   useEffect(() => {
@@ -103,23 +107,22 @@ export default function CardGame() {
   // Call the function handleScore and pass the two cards information as a parameter
   // Count rounds
   // Call the handleEndGame to show game result
-  const handlePlayRound = () => {
-    fetch(URL + deck.deck_id + "/draw/?count=2")
-      .then((resp) => resp.json())
-      .then((json) => {
-        setDeck(json);
-        if (json?.cards?.length > 1) {
-          handleScore(json.cards[0], json.cards[1]);
-        }
-        if (json.remaining > 0) {
-          setRound((prev) => prev + 1);
-        } else {
-          handleEndGame();
-        }
-      })
-      .catch((error) => {
-        console.log("Error fetching deck card", error);
-      });
+  const handlePlayRound = async () => {
+    try {
+      const response = await fetch(URL + deck.deck_id + "/draw/?count=2");
+      const json = await response.json();
+      setDeck(json);
+      if (json?.cards?.length > 1) {
+        handleScore(json.cards[0], json.cards[1]);
+      }
+      if (json.remaining > 0) {
+        setRound((prev) => prev + 1);
+      } else {
+        handleEndGame();
+      }
+    } catch (error) {
+      console.log("Error fetching deck card", error);
+    }
   };
 
   // Check if the json has information and set the cards name
@@ -154,14 +157,25 @@ export default function CardGame() {
         <View style={styles.cardContainer}>
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Your Card</Text>
-            <Image style={styles.cardImage} source={{ uri: yourCard?.image }} />
+            <Image
+              style={styles.cardImage}
+              source={{
+                uri:
+                  yourCard?.image ||
+                  "https://www.deckofcardsapi.com/static/img/back.png",
+              }}
+            />
             <Text style={styles.cardText}>{getCardInformation(yourCard)}</Text>
           </View>
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Computer Card</Text>
             <Image
               style={styles.cardImage}
-              source={{ uri: computerCard?.image }}
+              source={{
+                uri:
+                  computerCard?.image ||
+                  "https://www.deckofcardsapi.com/static/img/back.png",
+              }}
             />
             <Text style={styles.cardText}>
               {getCardInformation(computerCard)}
